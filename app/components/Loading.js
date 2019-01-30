@@ -1,7 +1,7 @@
-var React = require('react');
-var PropTypes = require('prop-types');
+import React from 'react'
+import PropTypes from 'prop-types'
 
-var styles = {
+const styles = {
   content: {
     textAlign: 'center',
     fontSize: '35px'
@@ -9,51 +9,40 @@ var styles = {
 };
 
 class Loading extends React.Component {
-  constructor(props) {
-    super(props);
 
-    this.state = {
-      text: props.text
-    };
+   static propTypes = {
+    text: PropTypes.string.isRequired,
+    speed: PropTypes.number.isRequired,
+  };
+  
+  static defaultProps = {
+    text: 'Loading',
+    speed: 300
+  };
+
+  state = {
+    text: props.text
+  };
+
+  componentDidMount = ({text, speed}) => {
+    const stopper = text + '...';
+    this.interval = window.setInterval(() => {
+    this.state.text === stopper
+      ? this.setState(() => ({ text: text}))
+      : this.setState((prev) => ({ text: prev.text + '.'})) 
+    }, speed)
   }
-  componentDidMount() {
-    var stopper = this.props.text + '...';
-    this.interval = window.setInterval(function () {
-      if (this.state.text === stopper) {
-        this.setState(function () {
-          return {
-            text: this.props.text
-          }
-        })
-      } else {
-        this.setState(function (prevState) {
-          return {
-            text: prevState.text + '.'
-          }
-        });
-      }
-    }.bind(this), this.props.speed)
-  }
-  componentWillUnmount() {
+
+  componentWillUnmount = () => {
     window.clearInterval(this.interval);
   }
+
   render() {
-    return (
-      <p style={styles.content}>
-        {this.state.text}
-      </p>
-    )
+    const { text } = this.state
+    return <p style={styles.content}>{text}</p>
   }
 }
 
-Loading.propTypes = {
-  text: PropTypes.string.isRequired,
-  speed: PropTypes.number.isRequired,
-};
 
-Loading.defaultProps = {
-  text: 'Loading',
-  speed: 300
-};
 
-module.exports = Loading;
+export default Loading;
