@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Link from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import PlayerPreview from './PlayerPreview'
 
 class PlayerInput extends React.Component {
@@ -36,6 +36,7 @@ class PlayerInput extends React.Component {
   render() {
     const { label } = this.props
     const { username } = this.state
+
     return (
       <form className='column' onSubmit={this.handleSubmit}>
         <label className='header' htmlFor='username'>{label}</label>
@@ -141,4 +142,4 @@ class Battle extends React.Component {
   }
 }
 
-module.exports = Battle;
+export default Battle

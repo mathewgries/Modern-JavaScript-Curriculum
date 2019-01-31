@@ -21,11 +21,13 @@ class Loading extends React.Component {
   };
 
   state = {
-    text: props.text
+    text: this.props.text
   };
 
-  componentDidMount = ({text, speed}) => {
+  componentDidMount = () => {
+    const { text, speed } = this.props
     const stopper = text + '...';
+
     this.interval = window.setInterval(() => {
     this.state.text === stopper
       ? this.setState(() => ({ text: text}))
@@ -43,6 +45,4 @@ class Loading extends React.Component {
   }
 }
 
-
-
-export default Loading;
+export default Loading

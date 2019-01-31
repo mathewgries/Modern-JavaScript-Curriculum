@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-const api = require('../utils/api');
+import { fetchPopularRepos } from '../utils/api'
 import Loading from './Loading'
 
 function SelectLanguage({ selectedLanguage, onSelect }) {
@@ -14,8 +14,7 @@ function SelectLanguage({ selectedLanguage, onSelect }) {
           key={lang}>
           {lang}
         </li>
-      )
-      )}
+      ))}
     </ul>
   )
 }
@@ -34,13 +33,12 @@ function RepoGrid({ repos }) {
                 alt={'Avatar for ' + owner.login}
               />
             </li>
-            <li><a href={html_url}>{repo.name}</a></li>
+            <li><a href={html_url}>{name}</a></li>
             <li>@{owner.login}</li>
             <li>{stargazers_count} stars</li>
           </ul>
         </li>
-      )
-      )}
+      ))}
     </ul>
   )
 }
@@ -66,20 +64,20 @@ class Popular extends React.Component {
     this.updateLanguage(selectedLanguage)
   }
 
-  updateLanguage = (lang) => {
+  updateLanguage = async (lang) => {
     this.setState(() => ({
       selectedLanguage: lang,
       repos: null
     }))
 
-    api.fetchPopularRepos(lang)
-      .then((repos) => {
-        this.setState(() => ({ repos }))
-      });
+    const repos = await fetchPopularRepos(lang)
+    this.setState(() => ({ repos }))
+
   }
 
   render() {
-    const {selectedLanguage, repos} = this.state
+    const { selectedLanguage, repos } = this.state
+    
     return (
       <div>
         <SelectLanguage

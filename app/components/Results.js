@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import queryString from 'query-string'
-const api = require('../utils/api');
+import { battle } from '../utils/api'
 import { Link } from 'react-router-dom'
 import PlayerPreview from './PlayerPreview'
 import Loading from './Loading'
@@ -51,25 +51,27 @@ class Results extends React.Component {
     loading: true,
   }
 
-  componentDidMount = () => {
+  async componentDidMount() {
     const { playerOneName, playerTwoName } = queryString.parse(this.props.location.search);
 
-    api.battle([
+    const players = await battle([
       playerOneName,
       playerTwoName
-    ]).then((players) => {
-      players === null
-        ? this.setState(() => ({
-          error: 'Looks like there was an error. Check that both users exist on Github.',
-          loading: false,
-        }))
-        : this.setState(() => ({
-          error: null,
-          winner: players[0],
-          loser: players[1],
-          loading: false,
-        }))
-    });
+    ])
+
+    if (players === null) {
+      return this.setState(() => ({
+        error: 'Looks like there was an error. Check that both users exist on Github.',
+        loading: false,
+      }))
+    }
+
+    this.setState(() => ({
+      error: null,
+      winner: players[0],
+      loser: players[1],
+      loading: false,
+    }))
   }
 
   render() {
@@ -92,13 +94,13 @@ class Results extends React.Component {
       <div className='row'>
         <Player
           label='Winner'
-          score={score}
-          profile={profile}
+          score={winner.score}
+          profile={winner.profile}
         />
         <Player
           label='Loser'
-          score={score}
-          profile={profile}
+          score={loser.score}
+          profile={loser.profile}
         />
       </div>
     )
